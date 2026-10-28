@@ -24,6 +24,8 @@ android {
     buildTypes {
         release {
             optimization {
+//                signingConfig = signingConfigs.getByName("debug")   // 확인용 임시 설정
+                isMinifyEnabled = false
                 enable = false
             }
         }
@@ -53,4 +55,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+
+    //navigation
+    implementation(libs.androidx.navigation.compose)
 }
