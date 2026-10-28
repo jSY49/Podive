@@ -14,3 +14,5 @@ val Ink = Color(0xFF16191F)      // 본문·제목 글자
 val Line = Color(0xFFE9E5DF)     // 입력창 테두리, 탭 위 구분선
 val ErrorBg = Color(0xFFFCEEEE)  // 오류 박스 배경
 val ErrorText = Color(0xFF8F2424)
+
+val Unable = Color(0xFF9CA1A9)
