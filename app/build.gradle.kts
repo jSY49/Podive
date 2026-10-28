@@ -24,6 +24,8 @@ android {
     buildTypes {
         release {
             optimization {
+//                signingConfig = signingConfigs.getByName("debug")   // 확인용 임시 설정
+                isMinifyEnabled = false
                 enable = false
             }
         }

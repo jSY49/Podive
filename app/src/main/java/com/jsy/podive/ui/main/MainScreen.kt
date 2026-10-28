@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -19,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,25 +36,28 @@ import com.jsy.podive.ui.home.HomeScreen
 import com.jsy.podive.ui.library.LibraryScreen
 import com.jsy.podive.ui.navigation.BottomTabs
 import com.jsy.podive.ui.navigation.Routes
+import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(modifier: Modifier = Modifier) {
 
     val tabs = BottomTabs.entries
-    var currentTab by remember { mutableStateOf<BottomTabs>(BottomTabs.HomeTab) }
+    val pagerState = rememberPagerState(pageCount = { tabs.size })
+    val scope = rememberCoroutineScope()
+
     Scaffold(
         bottomBar = {
             NavigationBar {
-                tabs.forEach { tab ->
+                tabs.forEachIndexed { index, tab ->
                     NavigationBarItem(
-                        selected = currentTab == tab,
-                        onClick = { currentTab = tab },
+                        selected = pagerState.currentPage == index,
+                        onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
                         icon = {
                             Image(
                                 painter = painterResource(tab.icon),
                                 contentDescription = stringResource(tab.desc),
                                 colorFilter = ColorFilter.tint(
-                                    if (currentTab == tab) MaterialTheme.colorScheme.primary
+                                    if (pagerState.currentPage == index) MaterialTheme.colorScheme.primary
                                     else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
                                 )
                             )
@@ -61,7 +67,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                                 Text(
                                     text = stringResource(tab.label),
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = if (currentTab == tab) MaterialTheme.colorScheme.primary
+                                    color = if (pagerState.currentPage == index) MaterialTheme.colorScheme.primary
                                     else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
@@ -70,7 +76,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                                         .width(24.dp)
                                         .height(4.dp)
                                         .background(
-                                            color = if (currentTab == tab) MaterialTheme.colorScheme.primary
+                                            color = if (pagerState.currentPage == index) MaterialTheme.colorScheme.primary
                                             else Color.Transparent,
                                             shape = RoundedCornerShape(2.dp)
                                         )
@@ -85,8 +91,11 @@ fun MainScreen(modifier: Modifier = Modifier) {
             }
         }
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            when (currentTab) {
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.padding(innerPadding)
+        ) { page ->
+            when (tabs[page]) {
                 BottomTabs.HomeTab -> HomeScreen()
                 BottomTabs.ExploreTab -> ExploreScreen()
                 BottomTabs.LibraryTab -> LibraryScreen()
