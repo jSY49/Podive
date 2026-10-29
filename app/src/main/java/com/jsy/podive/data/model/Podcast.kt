@@ -8,4 +8,5 @@ data class Podcast(
     val artworkUrl: String,
     val episodeCount: Int,
     val genre: String,
+    val desc: String,
 )
