@@ -1,4 +1,4 @@
-package com.jsy.podive.data.remote.dao
+package com.jsy.podive.data.remote.dto
 
 import kotlinx.serialization.Serializable
 

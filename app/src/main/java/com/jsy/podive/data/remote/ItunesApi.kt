@@ -1,6 +1,6 @@
 package com.jsy.podive.data.remote
 
-import com.jsy.podive.data.remote.dao.ItunesSearchResponse
+import com.jsy.podive.data.remote.dto.ItunesSearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
