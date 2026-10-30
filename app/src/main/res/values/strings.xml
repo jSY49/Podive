@@ -6,4 +6,12 @@
     <string name="nav_explore">둘러보기</string>
     <string name="nav_lib">라이브러리</string>
 
+    <!-- genre -->
+    <string name="genre_technology">기술</string>
+    <string name="genre_science">과학</string>
+    <string name="genre_business">비즈니스</string>
+    <string name="genre_comedy">코미디</string>
+    <string name="genre_education">교육</string>
+    <string name="genre_news">뉴스</string>
+
 </resources>
