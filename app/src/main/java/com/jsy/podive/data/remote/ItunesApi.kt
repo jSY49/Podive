@@ -28,4 +28,11 @@ interface ItunesApi {
         @Query("id") ids: String,
         @Query("country") country: String = "KR",
     ): ItunesSearchResponse
+
+    @GET("{country}/rss/toppodcasts/limit={limit}/genre={genre}/json")
+    suspend fun getTopPodcastsByGenre(
+        @Path("genre") genre: Int,
+        @Path("country") country: String = "kr",
+        @Path("limit") limit: Int = 20,
+    ): ItunesChartResponse
 }
