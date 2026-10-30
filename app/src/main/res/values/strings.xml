@@ -1,10 +1,18 @@
 <resources>
     <string name="app_name">Podive</string>
 
-    //navigation
+    <!--navigation-->
     <string name="nav_home">홈</string>
     <string name="nav_explore">둘러보기</string>
     <string name="nav_lib">라이브러리</string>
+
+    <!--둘러보기-->
+    <string name="explore_header_title">둘러보기</string>
+    <string name="explore_tab_podcast">팟캐스트 검색</string>
+    <string name="explore_tab_rss">Rss 주소</string>
+    <string name="explore_chart_now_top">지금 인기</string>
+    <string name="explore_chart_search_desc">팟캐스트,제작자 검색</string>
+    <string name="explore_chart_genre_top">분야별 인기</string>
 
     <!-- genre -->
     <string name="genre_technology">기술</string>
@@ -13,5 +21,8 @@
     <string name="genre_comedy">코미디</string>
     <string name="genre_education">교육</string>
     <string name="genre_news">뉴스</string>
+
+    <!--  공통  -->
+    <string name="common_view_total">전체 보기</string>
 
 </resources>
