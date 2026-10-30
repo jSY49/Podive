@@ -16,9 +16,15 @@ class PodcastRepositoryImpl(
     }
 
     // 차트(ID, 설명) -> lookup(상세 정보) 순서로 호출해서 합친다
-    override suspend fun getTopPodcasts(limit: Int): Result<List<Podcast>> {
+    // genreId가 없으면 전체 인기 차트, 있으면 해당 장르의 차트
+    override suspend fun getTopPodcasts(genreId: Int?, limit: Int): Result<List<Podcast>> {
         return runCatching {
-            val entries = api.getTopPodcasts(limit = limit).feed.entry
+            val chart = if (genreId == null) {
+                api.getTopPodcasts(limit = limit)
+            } else {
+                api.getTopPodcastsByGenre(genre = genreId, limit = limit)
+            }
+            val entries = chart.feed.entry
 
             // 차트 순위 순서의 ID 목록
             val ids = entries.mapNotNull { it.id.attributes.id.toLongOrNull() }
