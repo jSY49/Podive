@@ -1,6 +1,8 @@
 package com.jsy.podive.ui.common
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -28,7 +30,7 @@ import coil3.compose.AsyncImage
 fun SmallItemCardView(
     title: String,
     artworkUrl: String,
-    author: String,
+    sub: String,
     modifier: Modifier = Modifier,
     onClick : () -> Unit = {}
 ) {
@@ -36,32 +38,40 @@ fun SmallItemCardView(
     //TODO 이미지 로딩 안될 때 대응 이미지 필요함
 
     Column(
-        modifier = Modifier.width(150.dp)
+        modifier = modifier.clickable(onClick = onClick)
     ) {
         AsyncImage(
             model = artworkUrl,
             contentDescription = title,
             modifier = Modifier
+                .fillMaxWidth()
                 .aspectRatio(1f)
-                .clip(RoundedCornerShape(12.dp)),
+                .clip(RoundedCornerShape(24.dp)),
             contentScale = ContentScale.Crop
         )
-        Text(
-            text = title,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onPrimary,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
-        Text(
-            text = author,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onPrimary,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    text = sub,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
     }
 }
 
@@ -73,6 +83,7 @@ private fun SmallItemCardViewPreview() {
     SmallItemCardView(
         title = "Cut to Black",
         artworkUrl = "https://images.unsplash.com/photo-1775840966242-d4dadb667541?q=80&w=1015&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
-        author = "james",
+        sub = "기술",
+        modifier = Modifier.width(160.dp)
     )
 }
