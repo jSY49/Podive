@@ -2,11 +2,10 @@ package com.jsy.podive.ui.explore
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jsy.podive.data.PodcastRepository
-import com.jsy.podive.data.PodcastRepositoryImpl
 import com.jsy.podive.data.model.Podcast
 import com.jsy.podive.data.model.PodcastGenre
-import com.jsy.podive.data.remote.NetworkModule
+import com.jsy.podive.data.repository.PodcastRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 sealed interface ListState {
     data object Loading : ListState
@@ -32,8 +32,9 @@ data class ExploreUiState(
     val genreTop: GenreListState = GenreListState.Loading,
 )
 
-class ExploreViewModel(
-    private val repository: PodcastRepository = PodcastRepositoryImpl(NetworkModule.itunesApi)
+@HiltViewModel
+class ExploreViewModel @Inject constructor(
+    private val repository: PodcastRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ExploreUiState())

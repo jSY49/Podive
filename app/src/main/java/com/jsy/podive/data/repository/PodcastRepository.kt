@@ -1,4 +1,4 @@
-package com.jsy.podive.data
+package com.jsy.podive.data.repository
 
 import com.jsy.podive.data.model.Podcast
 

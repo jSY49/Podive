@@ -32,11 +32,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jsy.podive.R
 import com.jsy.podive.data.model.Podcast
-import com.jsy.podive.data.model.PodcastGenre
 import com.jsy.podive.ui.common.BigItemCardView
 import com.jsy.podive.ui.common.ChipComponent
 import com.jsy.podive.ui.common.ScreenHeader
@@ -47,7 +46,7 @@ import com.jsy.podive.ui.common.skeleton.SmallItemCardSkeleton
 import com.jsy.podive.ui.theme.PodiveTheme
 
 @Composable
-fun ExploreScreen(modifier: Modifier = Modifier,   viewModel: ExploreViewModel = viewModel()) {
+fun ExploreScreen(modifier: Modifier = Modifier,  viewModel: ExploreViewModel = hiltViewModel()) {
 
     var selectedTab by remember { mutableStateOf(ExploreTab.PodcastSearch) }
     var rssUrl by remember { mutableStateOf("") }

@@ -1,11 +1,12 @@
-package com.jsy.podive.data
+package com.jsy.podive.data.repository
 
 import com.jsy.podive.data.mapper.toPodcasts
 import com.jsy.podive.data.model.Podcast
 import com.jsy.podive.data.remote.ItunesApi
+import javax.inject.Inject
 
 // 인터페이스 구현체, 실제 api 호출 하는 곳
-class PodcastRepositoryImpl(
+class PodcastRepositoryImpl @Inject constructor(
     private val api : ItunesApi
 ) : PodcastRepository {
 
