@@ -158,7 +158,6 @@ private fun UnderlineSegmentedControl(
         modifier = modifier
             .minimumInteractiveComponentSize()
             .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
             .padding(4.dp)
             .drawBehind {
 
