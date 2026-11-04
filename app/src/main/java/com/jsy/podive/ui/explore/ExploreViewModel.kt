@@ -44,7 +44,7 @@ class ExploreViewModel(
         loadGenreTop()
     }
 
-    private fun loadNowTop() {
+    fun loadNowTop() {
         //지금 인기
         viewModelScope.launch {
             _uiState.update { it.copy(nowTop = ListState.Loading) }
@@ -59,7 +59,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun loadGenreTop() {
+    fun loadGenreTop() {
         //분야별 인기
         viewModelScope.launch {
             _uiState.update { it.copy(genreTop = GenreListState.Loading) }

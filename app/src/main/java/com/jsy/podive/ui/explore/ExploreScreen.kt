@@ -42,6 +42,8 @@ import com.jsy.podive.ui.common.ChipComponent
 import com.jsy.podive.ui.common.ScreenHeader
 import com.jsy.podive.ui.common.SegmentedControl
 import com.jsy.podive.ui.common.SmallItemCardView
+import com.jsy.podive.ui.common.skeleton.BigItemCardSkeleton
+import com.jsy.podive.ui.common.skeleton.SmallItemCardSkeleton
 import com.jsy.podive.ui.theme.PodiveTheme
 
 @Composable
@@ -51,8 +53,6 @@ fun ExploreScreen(modifier: Modifier = Modifier,   viewModel: ExploreViewModel =
     var rssUrl by remember { mutableStateOf("") }
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()  //collectAsStateWithLifecycle :Flow 를 Compose 의 State 로 바꿔서 값이 바뀌면 화면을 다시 그리기 , 앱이 백그라운드 가면 수집 멈춤
-    val nowTopPodcasts = (uiState.nowTop as? ListState.Success)?.podcasts.orEmpty()
-    val genreTopPodcasts = (uiState.genreTop as? GenreListState.Success)?.items.orEmpty()
 
 
     Column(
@@ -75,8 +75,10 @@ fun ExploreScreen(modifier: Modifier = Modifier,   viewModel: ExploreViewModel =
 
         when (selectedTab) {
             ExploreTab.PodcastSearch -> PodcastSearchTab(
-                nowTopPodcasts = nowTopPodcasts,
-                genreTopPodcasts = genreTopPodcasts,
+                nowTop = uiState.nowTop,
+                genreTop = uiState.genreTop,
+                onRetryNowTop = viewModel::loadNowTop,
+                onRetryGenreTop = viewModel::loadGenreTop,
                 onSearchClick = {
                     // TODO 검색 화면으로 이동 (검색어 입력 후 PodcastRepository.searchPodcast(term) 호출)
                 },
@@ -103,8 +105,10 @@ fun ExploreScreen(modifier: Modifier = Modifier,   viewModel: ExploreViewModel =
 
 @Composable
 private fun PodcastSearchTab(
-    nowTopPodcasts: List<Podcast>,
-    genreTopPodcasts: List<Pair<PodcastGenre, Podcast>>,
+    nowTop: ListState,
+    genreTop: GenreListState,
+    onRetryNowTop: () -> Unit,
+    onRetryGenreTop: () -> Unit,
     onSearchClick: () -> Unit,
     onPodcastClick: (Podcast) -> Unit,
     onViewTotalClick: () -> Unit,
@@ -141,20 +145,32 @@ private fun PodcastSearchTab(
                     )
                 }
 
-                LazyRow(
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(nowTopPodcasts, key = { it.id }) { podcast ->
-                        BigItemCardView(
-                            title = podcast.title,
-                            artworkUrl = podcast.artworkUrl,
-                            desc = podcast.desc,
-                            genre = podcast.genre,
-                            onClick = { onPodcastClick(podcast) },
-                            modifier = Modifier.width(276.dp)
-                        )
+                when (nowTop) {
+                    is ListState.Loading -> LazyRow(
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        userScrollEnabled = false
+                    ) {
+                        items(2) { BigItemCardSkeleton(Modifier.width(276.dp)) }
                     }
+
+                    is ListState.Success -> LazyRow(
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(nowTop.podcasts, key = { it.id }) { podcast ->
+                            BigItemCardView(
+                                title = podcast.title,
+                                artworkUrl = podcast.artworkUrl,
+                                desc = podcast.desc,
+                                genre = podcast.genre,
+                                onClick = { onPodcastClick(podcast) },
+                                modifier = Modifier.width(276.dp)
+                            )
+                        }
+                    }
+
+                    is ListState.Error -> ErrorRetry(onRetry = onRetryNowTop)
                 }
             }
         }
@@ -183,25 +199,68 @@ private fun PodcastSearchTab(
         }
 
         // 2열 그리드 (LazyColumn 안이라 2개씩 묶어서 Row 로 그림)
-        items(genreTopPodcasts.chunked(2)) { rowItems ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                rowItems.forEach { (genre, podcast) ->
-                    SmallItemCardView(
-                        title = podcast.title,
-                        artworkUrl = podcast.artworkUrl,
-                        sub = stringResource(genre.label),
-                        onClick = { onPodcastClick(podcast) },
-                        modifier = Modifier.weight(1f)
-                    )
+        when (genreTop) {
+            is GenreListState.Loading -> items(3) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    SmallItemCardSkeleton(Modifier.weight(1f))
+                    SmallItemCardSkeleton(Modifier.weight(1f))
                 }
-                if (rowItems.size == 1) Spacer(Modifier.weight(1f))
             }
+
+            is GenreListState.Success -> items(genreTop.items.chunked(2)) { rowItems ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    rowItems.forEach { (genre, podcast) ->
+                        SmallItemCardView(
+                            title = podcast.title,
+                            artworkUrl = podcast.artworkUrl,
+                            sub = stringResource(genre.label),
+                            onClick = { onPodcastClick(podcast) },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                    if (rowItems.size == 1) Spacer(Modifier.weight(1f))
+                }
+            }
+
+            is GenreListState.Error -> item { ErrorRetry(onRetry = onRetryGenreTop) }
         }
+    }
+}
+
+@Composable
+private fun ErrorRetry(
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "불러오지 못했어요", // TODO strings.xml 로 이동
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(8.dp))
+        ChipComponent(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            text = "다시 시도", // TODO strings.xml 로 이동
+            icon = R.drawable.ic_refresh,
+            onClick = onRetry
+        )
     }
 }
 
