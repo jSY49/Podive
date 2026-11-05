@@ -1,7 +1,9 @@
 package com.jsy.podive.data.repository
 
+import com.jsy.podive.data.mapper.toPodcastDetail
 import com.jsy.podive.data.mapper.toPodcasts
 import com.jsy.podive.data.model.Podcast
+import com.jsy.podive.data.model.PodcastDetail
 import com.jsy.podive.data.remote.ItunesApi
 import javax.inject.Inject
 
@@ -54,4 +56,16 @@ class PodcastRepositoryImpl @Inject constructor(
         }
     }
 
+    // 팟캐스트 정보 + 에피소드 목록을 한 번에 조회한다
+    // desc 는 차트에만 있는 설명이라, 목록 화면에서 들고 온 값을 그대로 넣어준다
+    override suspend fun getPodcastDetail(
+        id: Long,
+        desc: String,
+        episodeLimit: Int
+    ): Result<PodcastDetail> {
+        return runCatching {
+            api.lookupEpisodes(id = id, limit = episodeLimit).toPodcastDetail(desc)
+                ?: error("팟캐스트 정보를 찾을 수 없어요")
+        }
+    }
 }
