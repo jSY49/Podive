@@ -38,6 +38,7 @@ import com.jsy.podive.R
 import com.jsy.podive.data.model.Podcast
 import com.jsy.podive.ui.common.BigItemCardView
 import com.jsy.podive.ui.common.ChipComponent
+import com.jsy.podive.ui.common.ErrorRetry
 import com.jsy.podive.ui.common.ScreenHeader
 import com.jsy.podive.ui.common.SegmentedControl
 import com.jsy.podive.ui.common.SmallItemCardView
@@ -46,7 +47,12 @@ import com.jsy.podive.ui.common.skeleton.SmallItemCardSkeleton
 import com.jsy.podive.ui.theme.PodiveTheme
 
 @Composable
-fun ExploreScreen(modifier: Modifier = Modifier,  viewModel: ExploreViewModel = hiltViewModel()) {
+fun ExploreScreen(
+    modifier: Modifier = Modifier,
+    onPodcastClick: (Podcast) -> Unit = {},
+    onViewTotalClick: () -> Unit = {},
+    viewModel: ExploreViewModel = hiltViewModel()
+) {
 
     var selectedTab by remember { mutableStateOf(ExploreTab.PodcastSearch) }
     var rssUrl by remember { mutableStateOf("") }
@@ -81,12 +87,8 @@ fun ExploreScreen(modifier: Modifier = Modifier,  viewModel: ExploreViewModel = 
                 onSearchClick = {
                     // TODO 검색 화면으로 이동 (검색어 입력 후 PodcastRepository.searchPodcast(term) 호출)
                 },
-                onPodcastClick = {
-                    // TODO 팟캐스트 상세 화면으로 이동
-                },
-                onViewTotalClick = {
-                    // TODO 지금 인기 전체 보기 화면으로 이동
-                },
+                onPodcastClick = onPodcastClick,
+                onViewTotalClick = onViewTotalClick,
                 modifier = Modifier.weight(1f)
             )
 
@@ -233,33 +235,6 @@ private fun PodcastSearchTab(
 
             is GenreListState.Error -> item { ErrorRetry(onRetry = onRetryGenreTop) }
         }
-    }
-}
-
-@Composable
-private fun ErrorRetry(
-    onRetry: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "불러오지 못했어요", // TODO strings.xml 로 이동
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(Modifier.height(8.dp))
-        ChipComponent(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            text = "다시 시도", // TODO strings.xml 로 이동
-            icon = R.drawable.ic_refresh,
-            onClick = onRetry
-        )
     }
 }
 

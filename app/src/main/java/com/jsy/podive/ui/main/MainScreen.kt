@@ -31,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jsy.podive.data.model.Podcast
 import com.jsy.podive.ui.explore.ExploreScreen
 import com.jsy.podive.ui.home.HomeScreen
 import com.jsy.podive.ui.library.LibraryScreen
@@ -39,10 +40,14 @@ import com.jsy.podive.ui.navigation.Routes
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
+fun MainScreen(
+    modifier: Modifier = Modifier,
+    onPodcastClick: (Podcast) -> Unit = {},
+    onViewTotalClick: () -> Unit = {},
+) {
 
     val tabs = BottomTabs.entries
-    val pagerState = rememberPagerState(pageCount = { tabs.size })
+val pagerState = rememberPagerState(pageCount = { tabs.size })
     val scope = rememberCoroutineScope()
 
     Scaffold(
@@ -97,7 +102,10 @@ fun MainScreen(modifier: Modifier = Modifier) {
         ) { page ->
             when (tabs[page]) {
                 BottomTabs.HomeTab -> HomeScreen()
-                BottomTabs.ExploreTab -> ExploreScreen()
+                BottomTabs.ExploreTab -> ExploreScreen(
+                    onPodcastClick = onPodcastClick,
+                    onViewTotalClick = onViewTotalClick
+                )
                 BottomTabs.LibraryTab -> LibraryScreen()
             }
         }

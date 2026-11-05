@@ -39,6 +39,7 @@ fun BigItemCardView(
         MaterialTheme.colorScheme.primary
     )
     Card(
+        onClick = onClick,
         modifier = modifier.aspectRatio(276f / 208f),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
