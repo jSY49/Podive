@@ -24,5 +24,24 @@
 
     <!--  공통  -->
     <string name="common_view_total">전체 보기</string>
+    <string name="common_back">뒤로 가기</string>
+    <string name="common_more">더보기</string>
+    <string name="common_load_error">불러오지 못했어요</string>
+    <string name="common_retry">다시 시도</string>
+
+    <!-- 팟캐스트 목록 -->
+    <string name="podcast_list_title">분야별 인기</string>
+    <string name="podcast_list_genre_all">전체</string>
+
+    <!-- 팟캐스트 상세 -->
+    <string name="podcast_detail_play_latest">최신화 재생</string>
+    <string name="podcast_detail_subscribe">구독</string>
+    <string name="podcast_detail_subscribed">구독중</string>
+    <string name="podcast_detail_meta">%1$s · 에피소드 %2$d개</string>
+    <string name="podcast_detail_episodes">에피소드</string>
+    <string name="podcast_detail_play">재생</string>
+    <string name="podcast_detail_date_duration">%1$s · %2$s</string>
+    <string name="duration_minutes">%1$d분</string>
+    <string name="duration_hours_minutes">%1$d시간 %2$d분</string>
 
 </resources>
