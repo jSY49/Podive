@@ -47,7 +47,12 @@ fun MainScreen(
 ) {
 
     val tabs = BottomTabs.entries
-val pagerState = rememberPagerState(pageCount = { tabs.size })
+    // TODO 홈/라이브러리는 아직 비활성화. 구현하면 enabled 조건과 initialPage 를 풀어주기
+    val enabledTabs = setOf(BottomTabs.ExploreTab)
+    val pagerState = rememberPagerState(
+        initialPage = tabs.indexOf(BottomTabs.ExploreTab),
+        pageCount = { tabs.size }
+    )
     val scope = rememberCoroutineScope()
 
     Scaffold(
@@ -57,6 +62,7 @@ val pagerState = rememberPagerState(pageCount = { tabs.size })
                     NavigationBarItem(
                         selected = pagerState.currentPage == index,
                         onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
+                        enabled = tab in enabledTabs,
                         icon = {
                             Image(
                                 painter = painterResource(tab.icon),
@@ -98,7 +104,8 @@ val pagerState = rememberPagerState(pageCount = { tabs.size })
     ) { innerPadding ->
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
+            userScrollEnabled = false   // 스와이프로 비활성 탭으로 넘어가지 않게 막음
         ) { page ->
             when (tabs[page]) {
                 BottomTabs.HomeTab -> HomeScreen()
